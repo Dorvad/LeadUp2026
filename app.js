@@ -57,7 +57,7 @@ const WHATS_NEW = [
   { icon:"📎", title:"דף תרגול חדש למפגש הבא", meta:"PDF • מפגש 4 • היום", href:"#next" }
 ];
 
-const FEATURED = ["l2","l3","l8"]; // ids מתוך LIBRARY
+const FEATURED = ["l2","l3","l8"];
 
 const GALLERY = [
   {
@@ -79,24 +79,18 @@ const GALLERY = [
       { src:"https://picsum.photos/seed/leadup-203/900/900", alt:"תמונה ממפגש 3 – 3" , caption:"דיון קצר" },
       { src:"https://picsum.photos/seed/leadup-204/900/900", alt:"תמונה ממפגש 3 – 4" , caption:"תמונה קבוצתית" }
     ]
-  },
-  {
-    albumId:"a3",
-    title:"אירוע – סשן בונוס",
-    photos: [
-      { src:"https://picsum.photos/seed/leadup-301/900/900", alt:"תמונה מאירוע – 1" , caption:"בונוס – שאלות ותשובות" },
-      { src:"https://picsum.photos/seed/leadup-302/900/900", alt:"תמונה מאירוע – 2" , caption:"דיון פתוח" },
-      { src:"https://picsum.photos/seed/leadup-303/900/900", alt:"תמונה מאירוע – 3" , caption:"שיתוף תובנות" }
-    ]
   }
 ];
 
 /* =========================
    Helpers
 ========================= */
-
 const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+function safeText(el, value){ if (el) el.textContent = value; }
+
+function uniq(arr){ return Array.from(new Set(arr)); }
 
 function formatRelativeDays(ms){
   const d = Math.ceil(ms / (1000*60*60*24));
@@ -104,10 +98,6 @@ function formatRelativeDays(ms){
   if (d === 1) return "מחר";
   return `בעוד ${d} ימים`;
 }
-
-function safeText(el, value){ if(el) el.textContent = value; }
-
-function uniq(arr){ return Array.from(new Set(arr)); }
 
 function downloadFile(filename, content, mime="text/plain"){
   const blob = new Blob([content], { type: mime });
@@ -141,75 +131,110 @@ function toICSDate(dt){
 }
 
 /* =========================
-   Router (hash)
+   Router
 ========================= */
-
 const PAGES = ["home","next","recordings","library","gallery","whatsapp"];
 
+function currentPageFromHash(){
+  const h = (location.hash || "#home").slice(1).trim();
+  return PAGES.includes(h) ? h : "home";
+}
+
 function route(){
-  const hash = (location.hash || "#home").replace("#","").trim();
-  const page = PAGES.includes(hash) ? hash : "home";
+  const page = currentPageFromHash();
 
   PAGES.forEach(p=>{
     const el = $(`#page-${p}`);
-    if(!el) return;
-    el.hidden = (p !== page);
+    if (el) el.hidden = (p !== page);
   });
 
-  // highlight current in BOTH desktop nav and drawer
-  $$("[data-route]").forEach(a=>{
-    const target = (a.getAttribute("href")||"").replace("#","");
-    const isCurrent = target === page;
-    if (isCurrent) a.setAttribute("aria-current","page");
+  // Update aria-current for BOTH desktop + drawer links
+  $$("a[data-route]").forEach(a=>{
+    const target = (a.getAttribute("href") || "#home").slice(1);
+    if (target === page) a.setAttribute("aria-current","page");
     else a.removeAttribute("aria-current");
   });
 
-  const main = $("#main");
-  if (main) main.focus({ preventScroll: true });
-
-  closeDrawer();
+  // focus main (optional UX)
+  $("#main")?.focus?.({ preventScroll: true });
 }
 
 /* =========================
-   Drawer (mobile)
+   Drawer (mobile) – robust open/close, no invisible overlay blocking clicks
 ========================= */
-
 const drawer = $("#navDrawer");
 const menuBtn = $("#menuBtn");
 const closeDrawerBtn = $("#closeDrawerBtn");
 const drawerBackdrop = $("#drawerBackdrop");
 
+function isDrawerOpen(){
+  return drawer?.getAttribute("aria-hidden") === "false";
+}
+
 function openDrawer(){
-  if(!drawer) return;
+  if (!drawer) return;
   drawer.setAttribute("aria-hidden","false");
   menuBtn?.setAttribute("aria-expanded","true");
+  // prevent background scroll while open
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
 }
 
 function closeDrawer(){
-  if(!drawer) return;
+  if (!drawer) return;
   drawer.setAttribute("aria-hidden","true");
   menuBtn?.setAttribute("aria-expanded","false");
-  menuBtn?.focus?.({ preventScroll: true });
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
 }
 
 menuBtn?.addEventListener("click", ()=>{
-  const isHidden = drawer.getAttribute("aria-hidden") !== "false";
-  isHidden ? openDrawer() : closeDrawer();
+  isDrawerOpen() ? closeDrawer() : openDrawer();
 });
 closeDrawerBtn?.addEventListener("click", closeDrawer);
 drawerBackdrop?.addEventListener("click", closeDrawer);
 
 document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape"){
-    closeDrawer();
+  if (e.key === "Escape"){
+    if (isDrawerOpen()) closeDrawer();
     closeLightbox();
   }
 });
 
 /* =========================
+   CRITICAL FIX: Navigation clicks
+   We DO NOT prevent default except one case:
+   clicking same hash (no hashchange) => manual route
+========================= */
+function initNavigation(){
+  window.addEventListener("hashchange", ()=>{
+    route();
+  });
+
+  document.addEventListener("click", (e)=>{
+    const a = e.target.closest("a[data-route]");
+    if (!a) return;
+
+    // Close drawer immediately if open
+    if (isDrawerOpen()) closeDrawer();
+
+    const targetHash = a.getAttribute("href") || "#home";
+
+    // If same hash, browser won't fire hashchange
+    if (location.hash === targetHash){
+      e.preventDefault();
+      route();
+      return;
+    }
+
+    // Otherwise let browser update hash naturally; hashchange will route.
+    // (No preventDefault here!)
+  });
+}
+
+/* =========================
    Meeting UI + Countdown + ICS
 ========================= */
-
 function initMeeting(){
   const m = COURSE.nextMeeting;
 
@@ -239,10 +264,9 @@ function initMeeting(){
 
   const agendaList = $("#agendaList");
   if (agendaList){
-    agendaList.innerHTML = m.agenda.map(item=>`<li>${item}</li>`).join("");
+    agendaList.innerHTML = m.agenda.map(x=>`<li>${x}</li>`).join("");
   }
 
-  // checklist (localStorage)
   const checklistRoot = $("#checklist");
   const storageKey = `leadup_checklist_${m.id}`;
   const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
@@ -278,17 +302,14 @@ function initMeeting(){
 
   $("#resetChecklistBtn")?.addEventListener("click", ()=>{
     localStorage.removeItem(storageKey);
-    initMeeting(); // quick rerender
+    initMeeting();
   });
 
-  // prep materials
   const prep = $("#prepMaterials");
   if (prep){
     prep.innerHTML = "";
     const items = LIBRARY.filter(x => m.prepMaterialsIds.includes(x.id));
-    items.forEach(item=>{
-      prep.appendChild(renderContentCard(item));
-    });
+    items.forEach(item => prep.appendChild(renderContentCard(item)));
   }
 
   updateCountdown();
@@ -306,9 +327,9 @@ function updateCountdown(){
   const pill2 = $("#nextCountdownPill");
 
   if (diff <= 0){
-    if (pill1) pill1.textContent = "מתחילים עכשיו / כבר התחיל";
-    if (exact1) exact1.textContent = "אם פספסתם – ההקלטה תעלה לאחר המפגש.";
-    if (pill2) pill2.textContent = "מתחילים עכשיו / כבר התחיל";
+    pill1 && (pill1.textContent = "מתחילים עכשיו / כבר התחיל");
+    exact1 && (exact1.textContent = "אם פספסתם – ההקלטה תעלה לאחר המפגש.");
+    pill2 && (pill2.textContent = "מתחילים עכשיו / כבר התחיל");
     return;
   }
 
@@ -317,19 +338,16 @@ function updateCountdown(){
   const days = Math.floor(hours / 24);
 
   const short = formatRelativeDays(diff);
-  const exact = days > 0
-    ? `${days} ימים, ${hours - days*24} שעות`
-    : `${hours} שעות, ${mins} דקות`;
+  const exact = days > 0 ? `${days} ימים, ${hours - days*24} שעות` : `${hours} שעות, ${mins} דקות`;
 
-  if (pill1) pill1.textContent = short;
-  if (exact1) exact1.textContent = exact;
-  if (pill2) pill2.textContent = short;
+  pill1 && (pill1.textContent = short);
+  exact1 && (exact1.textContent = exact);
+  pill2 && (pill2.textContent = short);
 }
 
 function addMeetingToCalendar(m){
   const start = new Date(m.start);
   const end = new Date(m.end);
-
   const uid = `leadup-${m.id}-${Date.now()}@leadup.local`;
   const now = new Date();
 
@@ -356,7 +374,6 @@ END:VCALENDAR`;
 /* =========================
    Home – What's new + Featured
 ========================= */
-
 function initHome(){
   const root = $("#whatsNewList");
   if (root){
@@ -381,17 +398,16 @@ function initHome(){
   const featuredRoot = $("#featuredList");
   if (featuredRoot){
     featuredRoot.innerHTML = "";
-    FEATURED.map(id => LIBRARY.find(x=>x.id===id)).filter(Boolean)
-      .forEach(item=>{
-        featuredRoot.appendChild(renderContentCard(item));
-      });
+    FEATURED
+      .map(id => LIBRARY.find(x=>x.id===id))
+      .filter(Boolean)
+      .forEach(item => featuredRoot.appendChild(renderContentCard(item)));
   }
 }
 
 /* =========================
    Recordings – search + filters
 ========================= */
-
 function initRecordings(){
   const meetingFilter = $("#videoMeetingFilter");
   const topicFilter = $("#videoTopicFilter");
@@ -399,14 +415,13 @@ function initRecordings(){
   const meetings = uniq(VIDEOS.map(v=>v.meeting)).sort();
   const topics = uniq(VIDEOS.map(v=>v.topic)).sort((a,b)=>a.localeCompare(b,"he"));
 
-  if (meetingFilter){
-    meetingFilter.innerHTML = `<option value="all">הכל</option>` +
-      meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
-  }
-  if (topicFilter){
-    topicFilter.innerHTML = `<option value="all">הכל</option>` +
-      topics.map(t=>`<option value="${t}">${t}</option>`).join("");
-  }
+  meetingFilter && (meetingFilter.innerHTML =
+    `<option value="all">הכל</option>` + meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("")
+  );
+
+  topicFilter && (topicFilter.innerHTML =
+    `<option value="all">הכל</option>` + topics.map(t=>`<option value="${t}">${t}</option>`).join("")
+  );
 
   const apply = ()=>{
     const q = ($("#videoSearch")?.value || "").trim().toLowerCase();
@@ -415,10 +430,7 @@ function initRecordings(){
 
     let list = [...VIDEOS];
     if (q){
-      list = list.filter(v =>
-        v.title.toLowerCase().includes(q) ||
-        v.topic.toLowerCase().includes(q)
-      );
+      list = list.filter(v => v.title.toLowerCase().includes(q) || v.topic.toLowerCase().includes(q));
     }
     if (m !== "all") list = list.filter(v=>v.meeting === m);
     if (t !== "all") list = list.filter(v=>v.topic === t);
@@ -462,13 +474,12 @@ function renderVideos(list){
   });
 
   const count = $("#videoResultCount");
-  if (count) count.textContent = `${list.length} תוצאות`;
+  count && (count.textContent = `${list.length} תוצאות`);
 }
 
 /* =========================
    Library – search + filters
 ========================= */
-
 function initLibrary(){
   const meetingFilter = $("#libMeetingFilter");
   const topicFilter = $("#libTopicFilter");
@@ -478,18 +489,15 @@ function initLibrary(){
   const topics = uniq(LIBRARY.map(i=>i.topic)).sort((a,b)=>a.localeCompare(b,"he"));
   const types = uniq(LIBRARY.map(i=>i.type)).sort((a,b)=>a.localeCompare(b,"he"));
 
-  if (meetingFilter){
-    meetingFilter.innerHTML = `<option value="all">הכל</option>` +
-      meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
-  }
-  if (topicFilter){
-    topicFilter.innerHTML = `<option value="all">הכל</option>` +
-      topics.map(t=>`<option value="${t}">${t}</option>`).join("");
-  }
-  if (typeFilter){
-    typeFilter.innerHTML = `<option value="all">הכל</option>` +
-      types.map(t=>`<option value="${t}">${t}</option>`).join("");
-  }
+  meetingFilter && (meetingFilter.innerHTML =
+    `<option value="all">הכל</option>` + meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("")
+  );
+  topicFilter && (topicFilter.innerHTML =
+    `<option value="all">הכל</option>` + topics.map(t=>`<option value="${t}">${t}</option>`).join("")
+  );
+  typeFilter && (typeFilter.innerHTML =
+    `<option value="all">הכל</option>` + types.map(t=>`<option value="${t}">${t}</option>`).join("")
+  );
 
   const apply = ()=>{
     const q = ($("#libSearch")?.value || "").trim().toLowerCase();
@@ -550,7 +558,7 @@ function renderLibrary(list){
   });
 
   const count = $("#libResultCount");
-  if (count) count.textContent = `${list.length} פריטים`;
+  count && (count.textContent = `${list.length} פריטים`);
 }
 
 function typeIcon(type){
@@ -576,7 +584,6 @@ function renderContentCard(item){
 /* =========================
    Gallery + Lightbox
 ========================= */
-
 let lightboxState = { open:false, albumIndex:0, photoIndex:0 };
 
 function initGallery(){
@@ -610,7 +617,7 @@ function renderAlbum(albumIndex){
   const select = $("#albumSelect");
   if (!album || !grid) return;
 
-  if (select) select.value = album.albumId;
+  select && (select.value = album.albumId);
 
   grid.innerHTML = "";
   album.photos.forEach((p, i)=>{
@@ -632,11 +639,9 @@ function renderAlbum(albumIndex){
 function openLightbox(albumIndex, photoIndex){
   const lb = $("#lightbox");
   if (!lb) return;
-
   lightboxState.open = true;
   lightboxState.albumIndex = albumIndex;
   lightboxState.photoIndex = photoIndex;
-
   lb.hidden = false;
   lb.setAttribute("aria-hidden","false");
   renderLightbox();
@@ -645,7 +650,6 @@ function openLightbox(albumIndex, photoIndex){
 function closeLightbox(){
   const lb = $("#lightbox");
   if (!lb) return;
-
   lightboxState.open = false;
   lb.hidden = true;
   lb.setAttribute("aria-hidden","true");
@@ -654,7 +658,6 @@ function closeLightbox(){
 function stepLightbox(dir){
   const album = GALLERY[lightboxState.albumIndex];
   if (!album) return;
-
   const n = album.photos.length;
   lightboxState.photoIndex = (lightboxState.photoIndex + dir + n) % n;
   renderLightbox();
@@ -664,27 +667,20 @@ function renderLightbox(){
   const album = GALLERY[lightboxState.albumIndex];
   const p = album?.photos?.[lightboxState.photoIndex];
   if (!p) return;
-
   const img = $("#lightboxImg");
   const cap = $("#lightboxCaption");
-
-  if (img){
-    img.src = p.src;
-    img.alt = p.alt;
-  }
-  if (cap) cap.textContent = p.caption;
+  if (img){ img.src = p.src; img.alt = p.alt; }
+  cap && (cap.textContent = p.caption);
 }
 
 /* =========================
    WhatsApp page
 ========================= */
-
 function initWhatsapp(){
   const join = $("#whatsappJoinBtn");
   const input = $("#whatsappLinkInput");
-
-  if (join) join.href = COURSE.whatsappUrl;
-  if (input) input.value = COURSE.whatsappUrl;
+  join && (join.href = COURSE.whatsappUrl);
+  input && (input.value = COURSE.whatsappUrl);
 
   $("#copyWhatsappBtn")?.addEventListener("click", async ()=>{
     try{
@@ -706,43 +702,10 @@ function initWhatsapp(){
 }
 
 /* =========================
-   Navigation click handling (FIX for mobile drawer navigation)
-========================= */
-
-function initNavigationFix(){
-  // Hash changes normally trigger route()...
-  window.addEventListener("hashchange", route);
-
-  // ...but on mobile + drawer, we want to:
-  // 1) close drawer immediately
-  // 2) call route even when clicking the same hash
-  document.addEventListener("click", (e)=>{
-    const a = e.target.closest('a[data-route]');
-    if (!a) return;
-
-    closeDrawer();
-
-    const targetHash = a.getAttribute("href") || "#home";
-
-    // if clicking same hash, hashchange won't fire
-    if (location.hash === targetHash) {
-      e.preventDefault();
-      route();
-      return;
-    }
-
-    // ensure route runs after hash update
-    setTimeout(route, 0);
-  });
-}
-
-/* =========================
    Init
 ========================= */
-
 function init(){
-  initNavigationFix();
-
+  initNavigation();
   initMeeting();
   initHome();
   initRecordings();
@@ -750,6 +713,8 @@ function init(){
   initGallery();
   initWhatsapp();
 
+  // initial route
+  if (!location.hash) location.hash = "#home";
   route();
 }
 
