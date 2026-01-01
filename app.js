@@ -1,9 +1,12 @@
+/* =========================
+   Data (דמה) – ניתן להחליף בקלות
+========================= */
+
 const COURSE = {
   whatsappUrl: "https://chat.whatsapp.com/EXAMPLE_INVITE_LINK",
   nextMeeting: {
     id: "m4",
     title: "מפגש #4 – תקשורת אפקטיבית",
-    // ISO (ללא אזור זמן) – נחשב כזמן מקומי במכשיר
     start: "2026-02-14T09:30:00",
     end: "2026-02-14T11:00:00",
     dateText: "יום ד׳, 14.02.2026",
@@ -127,7 +130,6 @@ function escapeICS(text){
 }
 
 function toICSDate(dt){
-  // dt: Date in local time. Convert to UTC Z per spec.
   const pad = (n)=> String(n).padStart(2,"0");
   const yyyy = dt.getUTCFullYear();
   const mm = pad(dt.getUTCMonth()+1);
@@ -148,15 +150,13 @@ function route(){
   const hash = (location.hash || "#home").replace("#","").trim();
   const page = PAGES.includes(hash) ? hash : "home";
 
-  // hide/show pages
   PAGES.forEach(p=>{
     const el = $(`#page-${p}`);
     if(!el) return;
-    const active = p === page;
-    el.hidden = !active;
+    el.hidden = (p !== page);
   });
 
-  // aria-current
+  // highlight current in BOTH desktop nav and drawer
   $$("[data-route]").forEach(a=>{
     const target = (a.getAttribute("href")||"").replace("#","");
     const isCurrent = target === page;
@@ -164,7 +164,6 @@ function route(){
     else a.removeAttribute("aria-current");
   });
 
-  // focus main for clarity
   const main = $("#main");
   if (main) main.focus({ preventScroll: true });
 
@@ -172,7 +171,7 @@ function route(){
 }
 
 /* =========================
-   Drawer
+   Drawer (mobile)
 ========================= */
 
 const drawer = $("#navDrawer");
@@ -185,10 +184,12 @@ function openDrawer(){
   drawer.setAttribute("aria-hidden","false");
   menuBtn?.setAttribute("aria-expanded","true");
 }
+
 function closeDrawer(){
   if(!drawer) return;
   drawer.setAttribute("aria-hidden","true");
   menuBtn?.setAttribute("aria-expanded","false");
+  menuBtn?.focus?.({ preventScroll: true });
 }
 
 menuBtn?.addEventListener("click", ()=>{
@@ -211,6 +212,7 @@ document.addEventListener("keydown", (e)=>{
 
 function initMeeting(){
   const m = COURSE.nextMeeting;
+
   safeText($("#meetingTitle"), m.title);
   safeText($("#meetingDateText"), m.dateText);
   safeText($("#meetingTimeText"), m.timeText);
@@ -229,14 +231,12 @@ function initMeeting(){
   }
 
   $("#joinBtn")?.addEventListener("click", ()=>{
-    // מפחית עומס: כפתור ברור לפעולה אחת
     window.open(m.zoomUrl, "_blank", "noopener");
   });
 
   $("#addToCalendarBtn")?.addEventListener("click", ()=> addMeetingToCalendar(m));
   $("#addToCalendarBtn2")?.addEventListener("click", ()=> addMeetingToCalendar(m));
 
-  // agenda
   const agendaList = $("#agendaList");
   if (agendaList){
     agendaList.innerHTML = m.agenda.map(item=>`<li>${item}</li>`).join("");
@@ -278,8 +278,7 @@ function initMeeting(){
 
   $("#resetChecklistBtn")?.addEventListener("click", ()=>{
     localStorage.removeItem(storageKey);
-    // רענון מהיר
-    initMeeting();
+    initMeeting(); // quick rerender
   });
 
   // prep materials
@@ -292,7 +291,6 @@ function initMeeting(){
     });
   }
 
-  // countdown
   updateCountdown();
   setInterval(updateCountdown, 30_000);
 }
@@ -360,7 +358,6 @@ END:VCALENDAR`;
 ========================= */
 
 function initHome(){
-  // what's new
   const root = $("#whatsNewList");
   if (root){
     root.innerHTML = "";
@@ -381,7 +378,6 @@ function initHome(){
     });
   }
 
-  // featured
   const featuredRoot = $("#featuredList");
   if (featuredRoot){
     featuredRoot.innerHTML = "";
@@ -404,10 +400,12 @@ function initRecordings(){
   const topics = uniq(VIDEOS.map(v=>v.topic)).sort((a,b)=>a.localeCompare(b,"he"));
 
   if (meetingFilter){
-    meetingFilter.innerHTML = `<option value="all">הכל</option>` + meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
+    meetingFilter.innerHTML = `<option value="all">הכל</option>` +
+      meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
   }
   if (topicFilter){
-    topicFilter.innerHTML = `<option value="all">הכל</option>` + topics.map(t=>`<option value="${t}">${t}</option>`).join("");
+    topicFilter.innerHTML = `<option value="all">הכל</option>` +
+      topics.map(t=>`<option value="${t}">${t}</option>`).join("");
   }
 
   const apply = ()=>{
@@ -481,13 +479,16 @@ function initLibrary(){
   const types = uniq(LIBRARY.map(i=>i.type)).sort((a,b)=>a.localeCompare(b,"he"));
 
   if (meetingFilter){
-    meetingFilter.innerHTML = `<option value="all">הכל</option>` + meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
+    meetingFilter.innerHTML = `<option value="all">הכל</option>` +
+      meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("");
   }
   if (topicFilter){
-    topicFilter.innerHTML = `<option value="all">הכל</option>` + topics.map(t=>`<option value="${t}">${t}</option>`).join("");
+    topicFilter.innerHTML = `<option value="all">הכל</option>` +
+      topics.map(t=>`<option value="${t}">${t}</option>`).join("");
   }
   if (typeFilter){
-    typeFilter.innerHTML = `<option value="all">הכל</option>` + types.map(t=>`<option value="${t}">${t}</option>`).join("");
+    typeFilter.innerHTML = `<option value="all">הכל</option>` +
+      types.map(t=>`<option value="${t}">${t}</option>`).join("");
   }
 
   const apply = ()=>{
@@ -553,12 +554,7 @@ function renderLibrary(list){
 }
 
 function typeIcon(type){
-  const map = {
-    "PDF": "📄",
-    "מצגת": "📊",
-    "קישור": "🔗",
-    "תרגיל": "✅"
-  };
+  const map = { "PDF":"📄", "מצגת":"📊", "קישור":"🔗", "תרגיל":"✅" };
   return map[type] || "📌";
 }
 
@@ -603,7 +599,7 @@ function initGallery(){
 
   document.addEventListener("keydown", (e)=>{
     if (!lightboxState.open) return;
-    if (e.key === "ArrowLeft") stepLightbox(1);  // RTL feel – next
+    if (e.key === "ArrowLeft") stepLightbox(1);
     if (e.key === "ArrowRight") stepLightbox(-1);
   });
 }
@@ -626,19 +622,17 @@ function renderAlbum(albumIndex){
       <img src="${p.src}" alt="${p.alt}">
       <div class="badge">${i+1}/${album.photos.length}</div>
     `;
-    btn.addEventListener("click", ()=>{
-      openLightbox(albumIndex, i);
-    });
+    btn.addEventListener("click", ()=> openLightbox(albumIndex, i));
     grid.appendChild(btn);
   });
 
-  // update state album
   lightboxState.albumIndex = albumIndex;
 }
 
 function openLightbox(albumIndex, photoIndex){
   const lb = $("#lightbox");
   if (!lb) return;
+
   lightboxState.open = true;
   lightboxState.albumIndex = albumIndex;
   lightboxState.photoIndex = photoIndex;
@@ -651,6 +645,7 @@ function openLightbox(albumIndex, photoIndex){
 function closeLightbox(){
   const lb = $("#lightbox");
   if (!lb) return;
+
   lightboxState.open = false;
   lb.hidden = true;
   lb.setAttribute("aria-hidden","true");
@@ -659,6 +654,7 @@ function closeLightbox(){
 function stepLightbox(dir){
   const album = GALLERY[lightboxState.albumIndex];
   if (!album) return;
+
   const n = album.photos.length;
   lightboxState.photoIndex = (lightboxState.photoIndex + dir + n) % n;
   renderLightbox();
@@ -671,6 +667,7 @@ function renderLightbox(){
 
   const img = $("#lightboxImg");
   const cap = $("#lightboxCaption");
+
   if (img){
     img.src = p.src;
     img.alt = p.alt;
@@ -685,6 +682,7 @@ function renderLightbox(){
 function initWhatsapp(){
   const join = $("#whatsappJoinBtn");
   const input = $("#whatsappLinkInput");
+
   if (join) join.href = COURSE.whatsappUrl;
   if (input) input.value = COURSE.whatsappUrl;
 
@@ -693,7 +691,6 @@ function initWhatsapp(){
       await navigator.clipboard.writeText(COURSE.whatsappUrl);
       showToast();
     }catch{
-      // fallback
       input?.select();
       document.execCommand("copy");
       showToast();
@@ -709,17 +706,42 @@ function initWhatsapp(){
 }
 
 /* =========================
+   Navigation click handling (FIX for mobile drawer navigation)
+========================= */
+
+function initNavigationFix(){
+  // Hash changes normally trigger route()...
+  window.addEventListener("hashchange", route);
+
+  // ...but on mobile + drawer, we want to:
+  // 1) close drawer immediately
+  // 2) call route even when clicking the same hash
+  document.addEventListener("click", (e)=>{
+    const a = e.target.closest('a[data-route]');
+    if (!a) return;
+
+    closeDrawer();
+
+    const targetHash = a.getAttribute("href") || "#home";
+
+    // if clicking same hash, hashchange won't fire
+    if (location.hash === targetHash) {
+      e.preventDefault();
+      route();
+      return;
+    }
+
+    // ensure route runs after hash update
+    setTimeout(route, 0);
+  });
+}
+
+/* =========================
    Init
 ========================= */
 
 function init(){
-  // router
-  window.addEventListener("hashchange", route);
-  document.addEventListener("click", (e)=>{
-    const a = e.target.closest("[data-route]");
-    if (!a) return;
-    closeDrawer();
-  });
+  initNavigationFix();
 
   initMeeting();
   initHome();
