@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="בית דיגיטלי למשתתפי קורס ארגוני – כל התכנים במקום אחד." />
+  <title>leadUP2026 – בית דיגיטלי לקורס</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">דילוג לתוכן</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner container">
+      <div class="brand" aria-label="leadUP2026">
+        <div class="brand__mark" aria-hidden="true">↑</div>
+        <div class="brand__text">
+          <div class="brand__name">leadUP2026</div>
+          <div class="brand__tag">הבית הדיגיטלי של הקורס</div>
+        </div>
+      </div>
+
+      <button id="menuBtn" class="icon-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="navDrawer">
+        <span class="icon-btn__lines" aria-hidden="true"></span>
+      </button>
+
+      <nav class="nav" aria-label="ניווט ראשי">
+        <a class="nav__link" href="#home" data-route>בית</a>
+        <a class="nav__link" href="#next" data-route>המפגש הבא</a>
+        <a class="nav__link" href="#recordings" data-route>הקלטות</a>
+        <a class="nav__link" href="#library" data-route>מאגר תכנים</a>
+        <a class="nav__link" href="#gallery" data-route>גלריה</a>
+        <a class="nav__link" href="#whatsapp" data-route>וואטסאפ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Drawer for mobile -->
+  <aside id="navDrawer" class="drawer" aria-hidden="true">
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="תפריט ניווט">
+      <div class="drawer__header">
+        <div class="drawer__title">ניווט</div>
+        <button id="closeDrawerBtn" class="icon-btn icon-btn--close" aria-label="סגירת תפריט">
+          ✕
+        </button>
+      </div>
+      <div class="drawer__links">
+        <a class="drawer__link" href="#home" data-route>בית</a>
+        <a class="drawer__link" href="#next" data-route>המפגש הבא</a>
+        <a class="drawer__link" href="#recordings" data-route>הקלטות</a>
+        <a class="drawer__link" href="#library" data-route>מאגר תכנים</a>
+        <a class="drawer__link" href="#gallery" data-route>גלריה</a>
+        <a class="drawer__link" href="#whatsapp" data-route>וואטסאפ</a>
+      </div>
+      <div class="drawer__footer">
+        <div class="muted">טיפ: שמרו את העמוד במסך הבית לגישה מהירה.</div>
+      </div>
+    </div>
+    <button id="drawerBackdrop" class="drawer__backdrop" aria-label="סגירת תפריט"></button>
+  </aside>
+
+  <main id="main" class="container" role="main" tabindex="-1">
+    <!-- HOME -->
+    <section id="page-home" class="page" data-page="home" aria-labelledby="homeTitle">
+      <h1 id="homeTitle" class="sr-only">בית</h1>
+
+      <section class="hero card" aria-label="המפגש הקרוב">
+        <div class="hero__top">
+          <div>
+            <p class="kicker">המפגש הקרוב</p>
+            <h2 class="hero__title" id="meetingTitle">מפגש #4 – תקשורת אפקטיבית</h2>
+            <p class="hero__meta">
+              <span id="meetingDateText">יום ד׳, 14.02.2026</span> •
+              <span id="meetingTimeText">09:30–11:00</span> •
+              <span id="meetingLocationText">חדר ישיבות / זום</span>
+            </p>
+            <p class="hero__desc" id="meetingDesc">
+              תרגול קצר + כלים פרקטיים לשיחה עם צוותים עסוקים. הכנה: סקירת סיכום המפגש הקודם (5 דקות).
+            </p>
+          </div>
+
+          <div class="hero__status" aria-label="סטטוס זמן למפגש">
+            <div class="pill" id="countdownPill">בעוד …</div>
+            <div class="hero__small muted" id="countdownExact">מחשב זמן…</div>
+          </div>
+        </div>
+
+        <div class="hero__actions">
+          <button id="addToCalendarBtn" class="btn btn--primary">
+            <span class="btn__icon" aria-hidden="true">📅</span>
+            הוספה ליומן
+          </button>
+          <a class="btn btn--ghost" href="#next" data-route>
+            מעבר לעמוד הכנה למפגש
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">קיצורי דרך</h2>
+          <p class="section__subtitle">הגעה מהירה למה שבאמת צריך.</p>
+        </div>
+
+        <div class="grid grid--actions">
+          <a class="action-card" href="#recordings" data-route>
+            <div class="action-card__icon" aria-hidden="true">▶</div>
+            <div class="action-card__text">
+              <div class="action-card__title">צפייה בהקלטות</div>
+              <div class="action-card__meta">וידאו + חיפוש</div>
+            </div>
+          </a>
+
+          <a class="action-card" href="#library" data-route>
+            <div class="action-card__icon" aria-hidden="true">📚</div>
+            <div class="action-card__text">
+              <div class="action-card__title">מאגר תכנים</div>
+              <div class="action-card__meta">קבצים, מצגות, קישורים</div>
+            </div>
+          </a>
+
+          <a class="action-card" href="#gallery" data-route>
+            <div class="action-card__icon" aria-hidden="true">🖼</div>
+            <div class="action-card__text">
+              <div class="action-card__title">גלריית תמונות</div>
+              <div class="action-card__meta">אלבומים לפי מפגש</div>
+            </div>
+          </a>
+
+          <a class="action-card" href="#whatsapp" data-route>
+            <div class="action-card__icon" aria-hidden="true">💬</div>
+            <div class="action-card__text">
+              <div class="action-card__title">קבוצת וואטסאפ</div>
+              <div class="action-card__meta">עדכונים מהירים</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">מה חדש מאז המפגש האחרון</h2>
+          <p class="section__subtitle">עד 3 פריטים אחרונים שעלו.</p>
+        </div>
+
+        <div id="whatsNewList" class="list"></div>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">תכנים מומלצים</h2>
+          <p class="section__subtitle">חומרים שימושיים במיוחד לחזרה מהירה.</p>
+        </div>
+
+        <div id="featuredList" class="grid grid--cards"></div>
+      </section>
+    </section>
+
+    <!-- NEXT MEETING -->
+    <section id="page-next" class="page" data-page="next" aria-labelledby="nextTitle" hidden>
+      <h1 id="nextTitle" class="page__title">המפגש הבא</h1>
+
+      <section class="card">
+        <div class="card__row">
+          <div>
+            <p class="kicker">פרטי המפגש</p>
+            <h2 class="h2" id="nextMeetingTitle">מפגש #4 – תקשורת אפקטיבית</h2>
+            <p class="meta">
+              <span id="nextMeetingDate">יום ד׳, 14.02.2026</span> •
+              <span id="nextMeetingTime">09:30–11:00</span>
+            </p>
+            <p class="meta">
+              מיקום/לינק: <a id="nextMeetingLink" class="link" href="#" target="_blank" rel="noopener">לינק זום (דמה)</a>
+              <span class="sep">•</span>
+              <span id="nextMeetingRoom">חדר ישיבות 3</span>
+            </p>
+          </div>
+          <div class="stack stack--end">
+            <div class="pill pill--soft" id="nextCountdownPill">בעוד …</div>
+            <button class="btn btn--primary" id="joinBtn">
+              <span class="btn__icon" aria-hidden="true">→</span>
+              הצטרפות למפגש
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">אג׳נדה קצרה</h2>
+          <p class="section__subtitle">3–5 נקודות להתמצאות מהירה.</p>
+        </div>
+        <ol id="agendaList" class="bullets"></ol>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">Checklist הכנה</h2>
+          <p class="section__subtitle">פחות זיכרון, יותר הכרה: מסמנים וממשיכים.</p>
+        </div>
+
+        <div class="card">
+          <div id="checklist" class="checklist" role="list"></div>
+          <div class="card__actions">
+            <button class="btn btn--ghost" id="resetChecklistBtn">איפוס סימונים</button>
+            <button class="btn btn--primary" id="addToCalendarBtn2">הוספה ליומן</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section__head">
+          <h2 class="section__title">חומרים רלוונטיים</h2>
+          <p class="section__subtitle">קישורים ממוקדים להכנה.</p>
+        </div>
+
+        <div id="prepMaterials" class="grid grid--cards"></div>
+      </section>
+
+      <section class="section">
+        <div class="callout">
+          <div class="callout__icon" aria-hidden="true">💬</div>
+          <div class="callout__content">
+            <div class="callout__title">עדכונים אחרונים? הכי מהר בוואטסאפ.</div>
+            <div class="callout__text">שאלות קצרות, תזכורות, והבהרות לפני מפגש.</div>
+          </div>
+          <a class="btn btn--primary" href="#whatsapp" data-route>לוואטסאפ</a>
+        </div>
+      </section>
+    </section>
+
+    <!-- RECORDINGS -->
+    <section id="page-recordings" class="page" data-page="recordings" aria-labelledby="recordingsTitle" hidden>
+      <h1 id="recordingsTitle" class="page__title">הקלטות</h1>
+
+      <section class="filters card" aria-label="חיפוש ופילטרים בהקלטות">
+        <div class="filters__grid">
+          <div class="field">
+            <label for="videoSearch">חיפוש</label>
+            <input id="videoSearch" type="search" placeholder="חיפוש לפי כותרת/נושא…" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label for="videoMeetingFilter">פילטר לפי מפגש</label>
+            <select id="videoMeetingFilter">
+              <option value="all">הכל</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="videoTopicFilter">פילטר לפי נושא</label>
+            <select id="videoTopicFilter">
+              <option value="all">הכל</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filters__meta">
+          <span class="muted" id="videoResultCount">—</span>
+          <button class="btn btn--ghost btn--sm" id="videoResetBtn">איפוס</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div id="videoGrid" class="grid grid--media" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <!-- LIBRARY -->
+    <section id="page-library" class="page" data-page="library" aria-labelledby="libraryTitle" hidden>
+      <h1 id="libraryTitle" class="page__title">מאגר תכנים</h1>
+
+      <section class="filters card" aria-label="חיפוש ופילטרים במאגר התכנים">
+        <div class="filters__grid">
+          <div class="field">
+            <label for="libSearch">חיפוש</label>
+            <input id="libSearch" type="search" placeholder="חיפוש לפי שם פריט/נושא…" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label for="libMeetingFilter">מפגש</label>
+            <select id="libMeetingFilter">
+              <option value="all">הכל</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="libTopicFilter">נושא</label>
+            <select id="libTopicFilter">
+              <option value="all">הכל</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="libTypeFilter">סוג קובץ</label>
+            <select id="libTypeFilter">
+              <option value="all">הכל</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filters__meta">
+          <span class="muted" id="libResultCount">—</span>
+          <button class="btn btn--ghost btn--sm" id="libResetBtn">איפוס</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div id="libraryList" class="list" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="page-gallery" class="page" data-page="gallery" aria-labelledby="galleryTitle" hidden>
+      <h1 id="galleryTitle" class="page__title">גלריה</h1>
+
+      <section class="card">
+        <div class="card__row">
+          <div>
+            <p class="kicker">אלבומים</p>
+            <h2 class="h2">בחרו אלבום לפי מפגש/אירוע</h2>
+            <p class="muted">תצוגת Grid + פתיחה ב־Lightbox עם ניווט ברור.</p>
+          </div>
+          <div class="field">
+            <label for="albumSelect">אלבום</label>
+            <select id="albumSelect"></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div id="photoGrid" class="grid grid--photos" aria-live="polite"></div>
+      </section>
+
+      <!-- Lightbox -->
+      <div id="lightbox" class="lightbox" hidden aria-hidden="true">
+        <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="תצוגת תמונה">
+          <button class="icon-btn icon-btn--close lightbox__close" id="lightboxClose" aria-label="סגירה">✕</button>
+          <button class="icon-btn lightbox__nav" id="lightboxPrev" aria-label="תמונה קודמת">‹</button>
+
+          <figure class="lightbox__figure">
+            <img id="lightboxImg" alt="" />
+            <figcaption id="lightboxCaption" class="muted"></figcaption>
+          </figure>
+
+          <button class="icon-btn lightbox__nav" id="lightboxNext" aria-label="תמונה הבאה">›</button>
+        </div>
+        <button class="lightbox__backdrop" id="lightboxBackdrop" aria-label="סגירה"></button>
+      </div>
+    </section>
+
+    <!-- WHATSAPP -->
+    <section id="page-whatsapp" class="page" data-page="whatsapp" aria-labelledby="whatsappTitle" hidden>
+      <h1 id="whatsappTitle" class="page__title">וואטסאפ</h1>
+
+      <section class="card">
+        <p class="kicker">מטרת הקבוצה</p>
+        <h2 class="h2">עדכונים מהירים ושאלות קצרות בין מפגשים</h2>
+        <p class="muted">
+          הקבוצה נועדה להפחית חיפוש ולרכז עדכונים: קישורים, תזכורות, והבהרות קצרות.
+        </p>
+
+        <div class="divider"></div>
+
+        <h3 class="h3">כללי שימוש</h3>
+        <ul class="bullets">
+          <li>שומרים על הודעות קצרות וממוקדות.</li>
+          <li>שאלות “דחופות” מסומנות בתחילת הודעה: <strong>[דחוף]</strong>.</li>
+          <li>קישורים חשובים – מצורפים עם שורת הסבר אחת.</li>
+          <li>לא משתפים מידע רגיש / אישי של עובדים.</li>
+          <li>במידת הצורך – פונים בפרטי למנחה.</li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <div class="card__actions card__actions--stack">
+          <a id="whatsappJoinBtn" class="btn btn--primary" target="_blank" rel="noopener">
+            <span class="btn__icon" aria-hidden="true">💬</span>
+            הצטרפות לקבוצה
+          </a>
+
+          <div class="copy-row" aria-label="העתקת לינק">
+            <input id="whatsappLinkInput" type="text" readonly />
+            <button id="copyWhatsappBtn" class="btn btn--ghost">העתקה</button>
+          </div>
+
+          <p id="copyToast" class="toast" role="status" aria-live="polite" hidden>הקישור הועתק ✅</p>
+        </div>
+      </section>
+    </section>
+
+    <footer class="footer" role="contentinfo">
+      <div class="footer__inner">
+        <span class="muted">© leadUP2026 • בית דיגיטלי לקורס • תוכן דמה</span>
+        <a class="link" href="#home" data-route>חזרה לראש העמוד</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
