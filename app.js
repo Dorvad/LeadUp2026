@@ -1,7 +1,3 @@
-/* =========================
-   Data (דמה) – ניתן להחליף בקלות
-========================= */
-
 const COURSE = {
   whatsappUrl: "https://chat.whatsapp.com/EXAMPLE_INVITE_LINK",
   nextMeeting: {
@@ -82,14 +78,11 @@ const GALLERY = [
   }
 ];
 
-/* =========================
-   Helpers
-========================= */
 const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const PAGES = ["home","next","recordings","library","gallery","whatsapp"];
 
 function safeText(el, value){ if (el) el.textContent = value; }
-
 function uniq(arr){ return Array.from(new Set(arr)); }
 
 function formatRelativeDays(ms){
@@ -121,20 +114,10 @@ function escapeICS(text){
 
 function toICSDate(dt){
   const pad = (n)=> String(n).padStart(2,"0");
-  const yyyy = dt.getUTCFullYear();
-  const mm = pad(dt.getUTCMonth()+1);
-  const dd = pad(dt.getUTCDate());
-  const hh = pad(dt.getUTCHours());
-  const mi = pad(dt.getUTCMinutes());
-  const ss = pad(dt.getUTCSeconds());
-  return `${yyyy}${mm}${dd}T${hh}${mi}${ss}Z`;
+  return `${dt.getUTCFullYear()}${pad(dt.getUTCMonth()+1)}${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}${pad(dt.getUTCMinutes())}${pad(dt.getUTCSeconds())}Z`;
 }
 
-/* =========================
-   Router
-========================= */
-const PAGES = ["home","next","recordings","library","gallery","whatsapp"];
-
+/* Router */
 function currentPageFromHash(){
   const h = (location.hash || "#home").slice(1).trim();
   return PAGES.includes(h) ? h : "home";
@@ -148,34 +131,27 @@ function route(){
     if (el) el.hidden = (p !== page);
   });
 
-  // Update aria-current for BOTH desktop + drawer links
   $$("a[data-route]").forEach(a=>{
     const target = (a.getAttribute("href") || "#home").slice(1);
     if (target === page) a.setAttribute("aria-current","page");
     else a.removeAttribute("aria-current");
   });
 
-  // focus main (optional UX)
   $("#main")?.focus?.({ preventScroll: true });
 }
 
-/* =========================
-   Drawer (mobile) – robust open/close, no invisible overlay blocking clicks
-========================= */
+/* Drawer */
 const drawer = $("#navDrawer");
 const menuBtn = $("#menuBtn");
 const closeDrawerBtn = $("#closeDrawerBtn");
 const drawerBackdrop = $("#drawerBackdrop");
 
-function isDrawerOpen(){
-  return drawer?.getAttribute("aria-hidden") === "false";
-}
+function isDrawerOpen(){ return drawer?.getAttribute("aria-hidden") === "false"; }
 
 function openDrawer(){
   if (!drawer) return;
   drawer.setAttribute("aria-hidden","false");
   menuBtn?.setAttribute("aria-expanded","true");
-  // prevent background scroll while open
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
 }
@@ -188,11 +164,20 @@ function closeDrawer(){
   document.body.style.overflow = "";
 }
 
-menuBtn?.addEventListener("click", ()=>{
-  isDrawerOpen() ? closeDrawer() : openDrawer();
-});
+menuBtn?.addEventListener("click", ()=> (isDrawerOpen() ? closeDrawer() : openDrawer()));
 closeDrawerBtn?.addEventListener("click", closeDrawer);
 drawerBackdrop?.addEventListener("click", closeDrawer);
+
+/* Lightbox state */
+let lightboxState = { open:false, albumIndex:0, photoIndex:0 };
+
+function closeLightbox(){
+  const lb = $("#lightbox");
+  if (!lb) return;
+  lightboxState.open = false;
+  lb.hidden = true;
+  lb.setAttribute("aria-hidden","true");
+}
 
 document.addEventListener("keydown", (e)=>{
   if (e.key === "Escape"){
@@ -201,40 +186,25 @@ document.addEventListener("keydown", (e)=>{
   }
 });
 
-/* =========================
-   CRITICAL FIX: Navigation clicks
-   We DO NOT prevent default except one case:
-   clicking same hash (no hashchange) => manual route
-========================= */
+/* Navigation clicks */
 function initNavigation(){
-  window.addEventListener("hashchange", ()=>{
-    route();
-  });
+  window.addEventListener("hashchange", route);
 
   document.addEventListener("click", (e)=>{
     const a = e.target.closest("a[data-route]");
     if (!a) return;
 
-    // Close drawer immediately if open
     if (isDrawerOpen()) closeDrawer();
 
     const targetHash = a.getAttribute("href") || "#home";
-
-    // If same hash, browser won't fire hashchange
     if (location.hash === targetHash){
       e.preventDefault();
       route();
-      return;
     }
-
-    // Otherwise let browser update hash naturally; hashchange will route.
-    // (No preventDefault here!)
   });
 }
 
-/* =========================
-   Meeting UI + Countdown + ICS
-========================= */
+/* Meeting + countdown + ICS */
 function initMeeting(){
   const m = COURSE.nextMeeting;
 
@@ -250,22 +220,14 @@ function initMeeting(){
   safeText($("#nextMeetingRoom"), m.roomText);
 
   const link = $("#nextMeetingLink");
-  if (link){
-    link.href = m.zoomUrl;
-    link.textContent = "לינק זום (דמה)";
-  }
+  if (link){ link.href = m.zoomUrl; link.textContent = "לינק זום (דמה)"; }
 
-  $("#joinBtn")?.addEventListener("click", ()=>{
-    window.open(m.zoomUrl, "_blank", "noopener");
-  });
-
+  $("#joinBtn")?.addEventListener("click", ()=> window.open(m.zoomUrl, "_blank", "noopener"));
   $("#addToCalendarBtn")?.addEventListener("click", ()=> addMeetingToCalendar(m));
   $("#addToCalendarBtn2")?.addEventListener("click", ()=> addMeetingToCalendar(m));
 
   const agendaList = $("#agendaList");
-  if (agendaList){
-    agendaList.innerHTML = m.agenda.map(x=>`<li>${x}</li>`).join("");
-  }
+  if (agendaList) agendaList.innerHTML = m.agenda.map(x=>`<li>${x}</li>`).join("");
 
   const checklistRoot = $("#checklist");
   const storageKey = `leadup_checklist_${m.id}`;
@@ -289,10 +251,7 @@ function initMeeting(){
 
       const text = document.createElement("div");
       text.className = "text";
-      text.innerHTML = `
-        <div><strong>${ci.title}</strong></div>
-        <span class="sub">${ci.note}</span>
-      `;
+      text.innerHTML = `<div><strong>${ci.title}</strong></div><span class="sub">${ci.note}</span>`;
 
       row.appendChild(input);
       row.appendChild(text);
@@ -308,8 +267,8 @@ function initMeeting(){
   const prep = $("#prepMaterials");
   if (prep){
     prep.innerHTML = "";
-    const items = LIBRARY.filter(x => m.prepMaterialsIds.includes(x.id));
-    items.forEach(item => prep.appendChild(renderContentCard(item)));
+    LIBRARY.filter(x => m.prepMaterialsIds.includes(x.id))
+      .forEach(item => prep.appendChild(renderContentCard(item)));
   }
 
   updateCountdown();
@@ -371,9 +330,7 @@ END:VCALENDAR`;
   downloadFile(`leadUP2026-${m.id}.ics`, ics, "text/calendar;charset=utf-8");
 }
 
-/* =========================
-   Home – What's new + Featured
-========================= */
+/* Home */
 function initHome(){
   const root = $("#whatsNewList");
   if (root){
@@ -398,16 +355,12 @@ function initHome(){
   const featuredRoot = $("#featuredList");
   if (featuredRoot){
     featuredRoot.innerHTML = "";
-    FEATURED
-      .map(id => LIBRARY.find(x=>x.id===id))
-      .filter(Boolean)
+    FEATURED.map(id => LIBRARY.find(x=>x.id===id)).filter(Boolean)
       .forEach(item => featuredRoot.appendChild(renderContentCard(item)));
   }
 }
 
-/* =========================
-   Recordings – search + filters
-========================= */
+/* Recordings */
 function initRecordings(){
   const meetingFilter = $("#videoMeetingFilter");
   const topicFilter = $("#videoTopicFilter");
@@ -418,7 +371,6 @@ function initRecordings(){
   meetingFilter && (meetingFilter.innerHTML =
     `<option value="all">הכל</option>` + meetings.map(m=>`<option value="${m}">${m.toUpperCase()}</option>`).join("")
   );
-
   topicFilter && (topicFilter.innerHTML =
     `<option value="all">הכל</option>` + topics.map(t=>`<option value="${t}">${t}</option>`).join("")
   );
@@ -429,9 +381,7 @@ function initRecordings(){
     const t = topicFilter?.value || "all";
 
     let list = [...VIDEOS];
-    if (q){
-      list = list.filter(v => v.title.toLowerCase().includes(q) || v.topic.toLowerCase().includes(q));
-    }
+    if (q) list = list.filter(v => v.title.toLowerCase().includes(q) || v.topic.toLowerCase().includes(q));
     if (m !== "all") list = list.filter(v=>v.meeting === m);
     if (t !== "all") list = list.filter(v=>v.topic === t);
 
@@ -477,9 +427,7 @@ function renderVideos(list){
   count && (count.textContent = `${list.length} תוצאות`);
 }
 
-/* =========================
-   Library – search + filters
-========================= */
+/* Library */
 function initLibrary(){
   const meetingFilter = $("#libMeetingFilter");
   const topicFilter = $("#libTopicFilter");
@@ -581,11 +529,7 @@ function renderContentCard(item){
   return card;
 }
 
-/* =========================
-   Gallery + Lightbox
-========================= */
-let lightboxState = { open:false, albumIndex:0, photoIndex:0 };
-
+/* Gallery + Lightbox */
 function initGallery(){
   const select = $("#albumSelect");
   if (!select) return;
@@ -625,10 +569,7 @@ function renderAlbum(albumIndex){
     btn.className = "photo";
     btn.type = "button";
     btn.setAttribute("aria-label", `פתיחת תמונה: ${p.caption}`);
-    btn.innerHTML = `
-      <img src="${p.src}" alt="${p.alt}">
-      <div class="badge">${i+1}/${album.photos.length}</div>
-    `;
+    btn.innerHTML = `<img src="${p.src}" alt="${p.alt}"><div class="badge">${i+1}/${album.photos.length}</div>`;
     btn.addEventListener("click", ()=> openLightbox(albumIndex, i));
     grid.appendChild(btn);
   });
@@ -639,20 +580,14 @@ function renderAlbum(albumIndex){
 function openLightbox(albumIndex, photoIndex){
   const lb = $("#lightbox");
   if (!lb) return;
+
   lightboxState.open = true;
   lightboxState.albumIndex = albumIndex;
   lightboxState.photoIndex = photoIndex;
+
   lb.hidden = false;
   lb.setAttribute("aria-hidden","false");
   renderLightbox();
-}
-
-function closeLightbox(){
-  const lb = $("#lightbox");
-  if (!lb) return;
-  lightboxState.open = false;
-  lb.hidden = true;
-  lb.setAttribute("aria-hidden","true");
 }
 
 function stepLightbox(dir){
@@ -667,15 +602,14 @@ function renderLightbox(){
   const album = GALLERY[lightboxState.albumIndex];
   const p = album?.photos?.[lightboxState.photoIndex];
   if (!p) return;
+
   const img = $("#lightboxImg");
   const cap = $("#lightboxCaption");
   if (img){ img.src = p.src; img.alt = p.alt; }
   cap && (cap.textContent = p.caption);
 }
 
-/* =========================
-   WhatsApp page
-========================= */
+/* WhatsApp */
 function initWhatsapp(){
   const join = $("#whatsappJoinBtn");
   const input = $("#whatsappLinkInput");
@@ -701,10 +635,11 @@ function initWhatsapp(){
   }
 }
 
-/* =========================
-   Init
-========================= */
 function init(){
+  // ודאות: מצב התחלתי סגור כדי למנוע כל overlay
+  closeDrawer();
+  closeLightbox();
+
   initNavigation();
   initMeeting();
   initHome();
@@ -713,7 +648,6 @@ function init(){
   initGallery();
   initWhatsapp();
 
-  // initial route
   if (!location.hash) location.hash = "#home";
   route();
 }
