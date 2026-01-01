@@ -10,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-  <!-- Cache-bust recommended for GitHub Pages -->
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 
 <body>
@@ -62,7 +61,7 @@
       </div>
 
       <div class="drawer__footer">
-        <div class="muted">טיפ: שמרו את העמוד למסך הבית לגישה מהירה.</div>
+        <div class="muted">טיפ: שמרו למסך הבית לגישה מהירה.</div>
       </div>
     </div>
   </aside>
@@ -98,7 +97,7 @@
             <span class="btn__icon" aria-hidden="true">📅</span>
             הוספה ליומן
           </button>
-          <a class="btn btn--ghost" href="#next" data-route>מעבר לעמוד הכנה למפגש</a>
+          <a class="btn btn--ghost" href="#next" data-route>עמוד הכנה למפגש</a>
         </div>
       </section>
 
@@ -148,7 +147,6 @@
           <h2 class="section__title">מה חדש מאז המפגש האחרון</h2>
           <p class="section__subtitle">עד 3 פריטים אחרונים שעלו.</p>
         </div>
-
         <div id="whatsNewList" class="list"></div>
       </section>
 
@@ -157,7 +155,6 @@
           <h2 class="section__title">תכנים מומלצים</h2>
           <p class="section__subtitle">חומרים שימושיים במיוחד לחזרה מהירה.</p>
         </div>
-
         <div id="featuredList" class="grid grid--cards"></div>
       </section>
     </section>
@@ -221,7 +218,6 @@
           <h2 class="section__title">חומרים רלוונטיים</h2>
           <p class="section__subtitle">קישורים ממוקדים להכנה.</p>
         </div>
-
         <div id="prepMaterials" class="grid grid--cards"></div>
       </section>
 
@@ -250,16 +246,12 @@
 
           <div class="field">
             <label for="videoMeetingFilter">פילטר לפי מפגש</label>
-            <select id="videoMeetingFilter">
-              <option value="all">הכל</option>
-            </select>
+            <select id="videoMeetingFilter"><option value="all">הכל</option></select>
           </div>
 
           <div class="field">
             <label for="videoTopicFilter">פילטר לפי נושא</label>
-            <select id="videoTopicFilter">
-              <option value="all">הכל</option>
-            </select>
+            <select id="videoTopicFilter"><option value="all">הכל</option></select>
           </div>
         </div>
 
@@ -287,23 +279,17 @@
 
           <div class="field">
             <label for="libMeetingFilter">מפגש</label>
-            <select id="libMeetingFilter">
-              <option value="all">הכל</option>
-            </select>
+            <select id="libMeetingFilter"><option value="all">הכל</option></select>
           </div>
 
           <div class="field">
             <label for="libTopicFilter">נושא</label>
-            <select id="libTopicFilter">
-              <option value="all">הכל</option>
-            </select>
+            <select id="libTopicFilter"><option value="all">הכל</option></select>
           </div>
 
           <div class="field">
             <label for="libTypeFilter">סוג קובץ</label>
-            <select id="libTypeFilter">
-              <option value="all">הכל</option>
-            </select>
+            <select id="libTypeFilter"><option value="all">הכל</option></select>
           </div>
         </div>
 
@@ -340,7 +326,6 @@
         <div id="photoGrid" class="grid grid--photos" aria-live="polite"></div>
       </section>
 
-      <!-- Lightbox -->
       <div id="lightbox" class="lightbox" hidden aria-hidden="true">
         <button class="lightbox__backdrop" id="lightboxBackdrop" aria-label="סגירה"></button>
 
@@ -365,19 +350,17 @@
       <section class="card">
         <p class="kicker">מטרת הקבוצה</p>
         <h2 class="h2">עדכונים מהירים ושאלות קצרות בין מפגשים</h2>
-        <p class="muted">
-          הקבוצה נועדה להפחית חיפוש ולרכז עדכונים: קישורים, תזכורות, והבהרות קצרות.
-        </p>
+        <p class="muted">קישורים, תזכורות, והבהרות קצרות — במקום אחד.</p>
 
         <div class="divider"></div>
 
         <h3 class="h3">כללי שימוש</h3>
         <ul class="bullets">
-          <li>שומרים על הודעות קצרות וממוקדות.</li>
-          <li>שאלות “דחופות” מסומנות בתחילת הודעה: <strong>[דחוף]</strong>.</li>
-          <li>קישורים חשובים – מצורפים עם שורת הסבר אחת.</li>
-          <li>לא משתפים מידע רגיש / אישי של עובדים.</li>
-          <li>במידת הצורך – פונים בפרטי למנחה.</li>
+          <li>הודעות קצרות וממוקדות.</li>
+          <li><strong>[דחוף]</strong> בתחילת הודעה רק כשצריך.</li>
+          <li>קישורים עם שורת הסבר אחת.</li>
+          <li>לא משתפים מידע רגיש/אישי.</li>
+          <li>במידת הצורך — פנייה בפרטי למנחה.</li>
         </ul>
 
         <div class="divider"></div>
@@ -400,12 +383,12 @@
 
     <footer class="footer" role="contentinfo">
       <div class="footer__inner">
-        <span class="muted">© leadUP2026 • בית דיגיטלי לקורס • תוכן דמה</span>
+        <span class="muted">© leadUP2026 • תוכן דמה</span>
         <a class="link" href="#home" data-route>חזרה לבית</a>
       </div>
     </footer>
   </main>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
