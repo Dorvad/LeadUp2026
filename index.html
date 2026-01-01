@@ -8,9 +8,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <!-- Cache-bust recommended for GitHub Pages -->
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 
 <body>
@@ -41,15 +42,16 @@
     </div>
   </header>
 
-  <!-- Drawer for mobile -->
+  <!-- Mobile Drawer -->
   <aside id="navDrawer" class="drawer" aria-hidden="true">
+    <button id="drawerBackdrop" class="drawer__backdrop" aria-label="סגירת תפריט" tabindex="-1"></button>
+
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="תפריט ניווט">
       <div class="drawer__header">
         <div class="drawer__title">ניווט</div>
-        <button id="closeDrawerBtn" class="icon-btn icon-btn--close" aria-label="סגירת תפריט">
-          ✕
-        </button>
+        <button id="closeDrawerBtn" class="icon-btn icon-btn--close" aria-label="סגירת תפריט">✕</button>
       </div>
+
       <div class="drawer__links">
         <a class="drawer__link" href="#home" data-route>בית</a>
         <a class="drawer__link" href="#next" data-route>המפגש הבא</a>
@@ -58,11 +60,11 @@
         <a class="drawer__link" href="#gallery" data-route>גלריה</a>
         <a class="drawer__link" href="#whatsapp" data-route>וואטסאפ</a>
       </div>
+
       <div class="drawer__footer">
-        <div class="muted">טיפ: שמרו את העמוד במסך הבית לגישה מהירה.</div>
+        <div class="muted">טיפ: שמרו את העמוד למסך הבית לגישה מהירה.</div>
       </div>
     </div>
-    <button id="drawerBackdrop" class="drawer__backdrop" aria-label="סגירת תפריט"></button>
   </aside>
 
   <main id="main" class="container" role="main" tabindex="-1">
@@ -96,9 +98,7 @@
             <span class="btn__icon" aria-hidden="true">📅</span>
             הוספה ליומן
           </button>
-          <a class="btn btn--ghost" href="#next" data-route>
-            מעבר לעמוד הכנה למפגש
-          </a>
+          <a class="btn btn--ghost" href="#next" data-route>מעבר לעמוד הכנה למפגש</a>
         </div>
       </section>
 
@@ -162,7 +162,7 @@
       </section>
     </section>
 
-    <!-- NEXT MEETING -->
+    <!-- NEXT -->
     <section id="page-next" class="page" data-page="next" aria-labelledby="nextTitle" hidden>
       <h1 id="nextTitle" class="page__title">המפגש הבא</h1>
 
@@ -176,11 +176,13 @@
               <span id="nextMeetingTime">09:30–11:00</span>
             </p>
             <p class="meta">
-              מיקום/לינק: <a id="nextMeetingLink" class="link" href="#" target="_blank" rel="noopener">לינק זום (דמה)</a>
+              מיקום/לינק:
+              <a id="nextMeetingLink" class="link" href="#" target="_blank" rel="noopener">לינק זום (דמה)</a>
               <span class="sep">•</span>
               <span id="nextMeetingRoom">חדר ישיבות 3</span>
             </p>
           </div>
+
           <div class="stack stack--end">
             <div class="pill pill--soft" id="nextCountdownPill">בעוד …</div>
             <button class="btn btn--primary" id="joinBtn">
@@ -202,7 +204,7 @@
       <section class="section">
         <div class="section__head">
           <h2 class="section__title">Checklist הכנה</h2>
-          <p class="section__subtitle">פחות זיכרון, יותר הכרה: מסמנים וממשיכים.</p>
+          <p class="section__subtitle">מסמנים וממשיכים.</p>
         </div>
 
         <div class="card">
@@ -227,7 +229,7 @@
         <div class="callout">
           <div class="callout__icon" aria-hidden="true">💬</div>
           <div class="callout__content">
-            <div class="callout__title">עדכונים אחרונים? הכי מהר בוואטסאפ.</div>
+            <div class="callout__title">עדכונים מהירים בוואטסאפ</div>
             <div class="callout__text">שאלות קצרות, תזכורות, והבהרות לפני מפגש.</div>
           </div>
           <a class="btn btn--primary" href="#whatsapp" data-route>לוואטסאפ</a>
@@ -325,7 +327,7 @@
           <div>
             <p class="kicker">אלבומים</p>
             <h2 class="h2">בחרו אלבום לפי מפגש/אירוע</h2>
-            <p class="muted">תצוגת Grid + פתיחה ב־Lightbox עם ניווט ברור.</p>
+            <p class="muted">תצוגת Grid + פתיחה ב־Lightbox.</p>
           </div>
           <div class="field">
             <label for="albumSelect">אלבום</label>
@@ -340,6 +342,8 @@
 
       <!-- Lightbox -->
       <div id="lightbox" class="lightbox" hidden aria-hidden="true">
+        <button class="lightbox__backdrop" id="lightboxBackdrop" aria-label="סגירה"></button>
+
         <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="תצוגת תמונה">
           <button class="icon-btn icon-btn--close lightbox__close" id="lightboxClose" aria-label="סגירה">✕</button>
           <button class="icon-btn lightbox__nav" id="lightboxPrev" aria-label="תמונה קודמת">‹</button>
@@ -351,7 +355,6 @@
 
           <button class="icon-btn lightbox__nav" id="lightboxNext" aria-label="תמונה הבאה">›</button>
         </div>
-        <button class="lightbox__backdrop" id="lightboxBackdrop" aria-label="סגירה"></button>
       </div>
     </section>
 
@@ -390,7 +393,7 @@
             <button id="copyWhatsappBtn" class="btn btn--ghost">העתקה</button>
           </div>
 
-          <p id="copyToast" class="toast" role="status" aria-live="polite" hidden>הקישור הועתק ✅</p>
+          <p id="copyToast" class="toast" role="status" aria-live="polite" hidden>הקישור הועתק</p>
         </div>
       </section>
     </section>
@@ -398,12 +401,11 @@
     <footer class="footer" role="contentinfo">
       <div class="footer__inner">
         <span class="muted">© leadUP2026 • בית דיגיטלי לקורס • תוכן דמה</span>
-        <a class="link" href="#home" data-route>חזרה לראש העמוד</a>
+        <a class="link" href="#home" data-route>חזרה לבית</a>
       </div>
     </footer>
   </main>
 
-<script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
-
