@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: dorvad/LeadUp2026
   branch: main
 
 media_folder: "uploads"
@@ -8,33 +9,18 @@ public_folder: "/uploads"
 publish_mode: simple
 
 collections:
-  - name: "course_site"
+  - name: "course"
     label: "אתר הקורס"
     files:
-
-      # HOME (Landing Hub)
-      - label: "בית"
-        name: "home"
-        file: "content/home.json"
+      - label: "המפגש הבא"
+        name: "next_meeting"
+        file: "content/next-meeting.json"
         format: "json"
         fields:
-          - label: "Hero – מפגש קרוב"
-            name: "hero"
-            widget: "object"
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "תאריך", name: "date", widget: "string" }
-              - { label: "שעה", name: "time", widget: "string" }
-              - { label: "תיאור קצר", name: "desc", widget: "text" }
-              - { label: "סטטוס (למשל בעוד X ימים)", name: "status", widget: "string" }
-              - { label: "CTA – טקסט כפתור", name: "ctaText", widget: "string" }
-              - { label: "CTA – לינק (יומן/קובץ/URL)", name: "ctaUrl", widget: "string" }
-
-          - label: "Quick Actions (כרטיסים)"
-            name: "quickActions"
-            widget: "list"
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
+          - { label: "כותרת", name: "title", widget: "string" }
+          - { label: "תיאור", name: "desc", widget: "text" }
+          - { label: "תאריך", name: "date", widget: "string" }
+          - { label: "שעה", name: "time", widget: "string" }              - { label: "כותרת", name: "title", widget: "string" }
               - { label: "אייקון (emoji קצר)", name: "icon", widget: "string" }
               - { label: "יעד (home | next | recordings | library | gallery | whatsapp)", name: "target", widget: "string" }
               - { label: "תיאור קצר", name: "desc", widget: "string", required: false }
