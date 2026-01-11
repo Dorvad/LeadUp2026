@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: dorvad/LeadUp2026
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "meetings"
+    label: "המפגש הבא"
+    files:
+      - label: "מפגש הבא"
+        name: "next"
+        file: "content/meeting.json"
+        fields:
+          - { label: "כותרת", name: "title", widget: "string" }
+          - { label: "תיאור", name: "desc", widget: "text" }
+          - { label: "תאריך", name: "date", widget: "string" }
