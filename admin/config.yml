@@ -1,19 +1,73 @@
 backend:
   name: git-gateway
-  repo: dorvad/LeadUp2026
   branch: main
+  accept_roles:
+    - admin
+
+site_url: https://leadup2026.netlify.app
 
 media_folder: "uploads"
 public_folder: "/uploads"
 
+publish_mode: simple
+
 collections:
-  - name: "meetings"
-    label: "המפגש הבא"
+  - name: "course"
+    label: "קורס"
     files:
-      - label: "מפגש הבא"
-        name: "next"
+
+      - label: "המפגש הבא"
+        name: "next_meeting"
         file: "content/meeting.json"
+        format: "json"
         fields:
           - { label: "כותרת", name: "title", widget: "string" }
           - { label: "תיאור", name: "desc", widget: "text" }
           - { label: "תאריך", name: "date", widget: "string" }
+          - { label: "שעה", name: "time", widget: "string" }
+          - { label: "לינק לזום", name: "zoom", widget: "string", required: false }
+
+      - label: "הקלטות"
+        name: "videos"
+        file: "content/videos.json"
+        format: "json"
+        fields:
+          - label: "סרטונים"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "קישור וידאו", name: "url", widget: "string" }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "נושא", name: "topic", widget: "string" }
+
+      - label: "מאגר תכנים"
+        name: "library"
+        file: "content/library.json"
+        format: "json"
+        fields:
+          - label: "פריטים"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "סוג", name: "type", widget: "select", options: ["PDF", "מצגת", "קישור", "תרגיל"] }
+              - { label: "קובץ / קישור", name: "url", widget: "file" }
+              - { label: "נושא", name: "topic", widget: "string" }
+
+      - label: "גלריה"
+        name: "gallery"
+        file: "content/gallery.json"
+        format: "json"
+        fields:
+          - label: "אלבומים"
+            name: "albums"
+            widget: "list"
+            fields:
+              - { label: "שם האלבום", name: "title", widget: "string" }
+              - label: "תמונות"
+                name: "photos"
+                widget: "list"
+                fields:
+                  - { label: "תמונה", name: "image", widget: "image" }
+                  - { label: "כיתוב", name: "caption", widget: "string", required: false }
