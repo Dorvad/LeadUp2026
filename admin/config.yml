@@ -9,7 +9,7 @@ public_folder: "/uploads"
 publish_mode: simple
 
 collections:
-  - name: "course"
+  - name: "course_site"
     label: "אתר הקורס"
     files:
       - label: "המפגש הבא"
@@ -17,140 +17,28 @@ collections:
         file: "content/next-meeting.json"
         format: "json"
         fields:
-          - { label: "כותרת", name: "title", widget: "string" }
-          - { label: "תיאור", name: "desc", widget: "text" }
-          - { label: "תאריך", name: "date", widget: "string" }
-          - { label: "שעה", name: "time", widget: "string" }              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "אייקון (emoji קצר)", name: "icon", widget: "string" }
-              - { label: "יעד (home | next | recordings | library | gallery | whatsapp)", name: "target", widget: "string" }
-              - { label: "תיאור קצר", name: "desc", widget: "string", required: false }
+          - label: "כותרת"
+            name: "title"
+            widget: "string"
 
-          - label: "מה חדש מאז המפגש האחרון"
-            name: "whatsNew"
-            widget: "list"
-            max: 3
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "סוג", name: "type", widget: "select", options: ["וידאו", "סיכום", "קובץ", "קישור"] }
-              - { label: "תיאור קצר", name: "desc", widget: "string", required: false }
-              - { label: "לינק", name: "url", widget: "string" }
+          - label: "תיאור"
+            name: "desc"
+            widget: "text"
 
-          - label: "תכנים מומלצים"
-            name: "featured"
-            widget: "list"
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "סוג", name: "type", widget: "select", options: ["PDF", "מצגת", "קישור", "וידאו", "תרגיל"] }
-              - { label: "לינק", name: "url", widget: "string" }
-              - { label: "סיבה/טיפ קטן", name: "note", widget: "string", required: false }
+          - label: "תאריך"
+            name: "date"
+            widget: "string"
 
-      # NEXT MEETING PAGE
-      - label: "המפגש הבא (עמוד)"
-        name: "next_meeting"
-        file: "content/next-meeting.json"
-        format: "json"
-        fields:
-          - { label: "כותרת", name: "title", widget: "string" }
-          - { label: "תאריך", name: "date", widget: "string" }
-          - { label: "שעה", name: "time", widget: "string" }
-          - { label: "מיקום / זום", name: "location", widget: "string" }
-          - { label: "לינק זום (אם יש)", name: "zoomUrl", widget: "string", required: false }
+          - label: "שעה"
+            name: "time"
+            widget: "string"
 
-          - label: "אג׳נדה"
-            name: "agenda"
-            widget: "list"
-            min: 0
-            max: 6
-            field: { label: "סעיף", name: "item", widget: "string" }
+          - label: "מיקום/זום"
+            name: "location"
+            widget: "string"
+            required: false
 
-          - label: "Checklist הכנה"
-            name: "checklist"
-            widget: "list"
-            fields:
-              - { label: "פריט", name: "title", widget: "string" }
-              - { label: "הערה (אופציונלי)", name: "note", widget: "string", required: false }
-
-          - label: "חומרים רלוונטיים (קישורים)"
-            name: "prepLinks"
-            widget: "list"
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "לינק", name: "url", widget: "string" }
-
-          - label: "קישור לוואטסאפ"
-            name: "whatsappCta"
-            widget: "object"
-            fields:
-              - { label: "טקסט כפתור", name: "text", widget: "string" }
-              - { label: "לינק", name: "url", widget: "string" }
-
-      # RECORDINGS (VIDEO LIBRARY)
-      - label: "הקלטות"
-        name: "recordings"
-        file: "content/recordings.json"
-        format: "json"
-        fields:
-          - label: "וידאו"
-            name: "items"
-            widget: "list"
-            fields:
-              - { label: "כותרת", name: "title", widget: "string" }
-              - { label: "מפגש (למשל 1/2/3)", name: "meeting", widget: "string" }
-              - { label: "נושא", name: "topic", widget: "string", required: false }
-              - { label: "משך זמן", name: "duration", widget: "string", required: false }
-              - { label: "YouTube URL (לינק רגיל)", name: "youtubeUrl", widget: "string" }
-              - { label: "התחלה בשניות (אופציונלי)", name: "startAt", widget: "number", required: false, value_type: "int", min: 0 }
-              - { label: "Thumbnail (אופציונלי)", name: "thumbnail", widget: "image", required: false }
-      # CONTENT LIBRARY
-      - label: "מאגר תכנים"
-        name: "library"
-        file: "content/library.json"
-        format: "json"
-        fields:
-          - label: "פריטים"
-            name: "items"
-            widget: "list"
-            fields:
-              - { label: "שם הפריט", name: "title", widget: "string" }
-              - { label: "מפגש", name: "meeting", widget: "string", required: false }
-              - { label: "נושא", name: "topic", widget: "string", required: false }
-              - { label: "סוג", name: "type", widget: "select", options: ["PDF", "מצגת", "קישור", "תרגיל", "וידאו"] }
-              - { label: "קובץ (אופציונלי)", name: "file", widget: "file", required: false }
-              - { label: "לינק (אופציונלי)", name: "url", widget: "string", required: false }
-              - { label: "תיאור קצר", name: "desc", widget: "string", required: false }
-
-      # GALLERY
-      - label: "גלריה"
-        name: "gallery"
-        file: "content/gallery.json"
-        format: "json"
-        fields:
-          - label: "אלבומים"
-            name: "albums"
-            widget: "list"
-            fields:
-              - { label: "שם אלבום", name: "title", widget: "string" }
-              - { label: "תיאור (אופציונלי)", name: "desc", widget: "string", required: false }
-              - label: "תמונות"
-                name: "photos"
-                widget: "list"
-                fields:
-                  - { label: "תמונה", name: "image", widget: "image" }
-                  - { label: "כיתוב (אופציונלי)", name: "caption", widget: "string", required: false }
-
-      # WHATSAPP PAGE
-      - label: "וואטסאפ"
-        name: "whatsapp"
-        file: "content/whatsapp.json"
-        format: "json"
-        fields:
-          - { label: "כותרת", name: "title", widget: "string" }
-          - { label: "הסבר קצר", name: "desc", widget: "text" }
-          - label: "כללי שימוש"
-            name: "rules"
-            widget: "list"
-            min: 3
-            max: 6
-            field: { label: "כלל", name: "rule", widget: "string" }
-          - { label: "לינק לקבוצה", name: "groupUrl", widget: "string" }
-          - { label: "טקסט כפתור", name: "ctaText", widget: "string" }
+          - label: "קישור זום"
+            name: "zoomUrl"
+            widget: "string"
+            required: false
