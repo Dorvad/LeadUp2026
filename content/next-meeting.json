@@ -1,11 +1,8 @@
 {
   "title": "מפגש הבא",
+  "desc": "טקסט דמה",
   "date": "14.02.2026",
   "time": "09:30–11:00",
   "location": "זום / חדר ישיבות",
-  "zoomUrl": "",
-  "agenda": [],
-  "checklist": [],
-  "prepLinks": [],
-  "whatsappCta": { "text": "לקבוצת הוואטסאפ", "url": "https://example.com" }
+  "zoomUrl": ""
 }
