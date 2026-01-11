@@ -12,7 +12,28 @@
 
   <link rel="stylesheet" href="styles.css?v=4" />
 </head>
+<div id="videoModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="videoModalBackdrop" class="modal__backdrop" data-close-video-modal></div>
 
+  <div class="modal__panel" role="document" aria-label="נגן וידאו">
+    <div class="modal__header">
+      <h3 id="videoModalTitle" class="modal__title">וידאו</h3>
+      <button class="modal__close" type="button" data-close-video-modal aria-label="סגירה">✕</button>
+    </div>
+
+    <div class="modal__body">
+      <div class="video-wrap">
+        <iframe
+          id="videoFrame"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 <body>
   <a class="skip-link" href="#main">דילוג לתוכן</a>
 
