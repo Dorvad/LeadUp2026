@@ -112,9 +112,9 @@ collections:
               - { label: "מפגש (למשל 1/2/3)", name: "meeting", widget: "string" }
               - { label: "נושא", name: "topic", widget: "string", required: false }
               - { label: "משך זמן", name: "duration", widget: "string", required: false }
-              - { label: "תמונה מקדימה", name: "thumbnail", widget: "image", required: false }
-              - { label: "קישור צפייה (YouTube/Vimeo/Drive)", name: "url", widget: "string" }
-
+              - { label: "YouTube URL (לינק רגיל)", name: "youtubeUrl", widget: "string" }
+              - { label: "התחלה בשניות (אופציונלי)", name: "startAt", widget: "number", required: false, value_type: "int", min: 0 }
+              - { label: "Thumbnail (אופציונלי)", name: "thumbnail", widget: "image", required: false }
       # CONTENT LIBRARY
       - label: "מאגר תכנים"
         name: "library"
