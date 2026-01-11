@@ -653,3 +653,10 @@ function init(){
 }
 
 init();
+
+fetch("content/meeting.json")
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById("meetingTitle").textContent = data.title;
+    document.getElementById("meetingDesc").textContent = data.desc;
+  });
