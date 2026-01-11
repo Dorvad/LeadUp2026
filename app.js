@@ -426,6 +426,92 @@ function renderVideos(list){
   const count = $("#videoResultCount");
   count && (count.textContent = `${list.length} תוצאות`);
 }
+function getYouTubeId(url) {
+  try {
+    const u = new URL(url);
+
+    // youtu.be/<id>
+    if (u.hostname.includes("youtu.be")) {
+      return u.pathname.replace("/", "");
+    }
+
+    // youtube.com/watch?v=<id>
+    if (u.searchParams.get("v")) {
+      return u.searchParams.get("v");
+    }
+
+    // youtube.com/embed/<id>
+    const parts = u.pathname.split("/");
+    const embedIndex = parts.indexOf("embed");
+    if (embedIndex !== -1 && parts[embedIndex + 1]) {
+      return parts[embedIndex + 1];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function buildYouTubeEmbedUrl(youtubeUrl, startAtSeconds = 0) {
+  const id = getYouTubeId(youtubeUrl);
+  if (!id) return null;
+
+  const base = `https://www.youtube-nocookie.com/embed/${id}`;
+  const params = new URLSearchParams({
+    autoplay: "1",
+    rel: "0",
+    modestbranding: "1"
+  });
+
+  const s = Number(startAtSeconds);
+  if (!Number.isNaN(s) && s > 0) params.set("start", String(s));
+
+  return `${base}?${params.toString()}`;
+}
+
+// --- Modal helpers (requires HTML elements shown below) ---
+function openVideoModal(embedUrl, title = "וידאו") {
+  const modal = document.getElementById("videoModal");
+  const frame = document.getElementById("videoFrame");
+  const heading = document.getElementById("videoModalTitle");
+
+  heading.textContent = title;
+  frame.src = embedUrl;
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeVideoModal() {
+  const modal = document.getElementById("videoModal");
+  const frame = document.getElementById("videoFrame");
+
+  frame.src = ""; // stop playback
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+// attach close listeners once
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-close-video-modal]") || e.target.id === "videoModalBackdrop") {
+    closeVideoModal();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeVideoModal();
+});
+
+// Example: when rendering each recording card, call this on button click
+function handleWatchClick(recording) {
+  const embedUrl = buildYouTubeEmbedUrl(recording.youtubeUrl, recording.startAt || 0);
+  if (!embedUrl) {
+    alert("הלינק ליוטיוב לא תקין.");
+    return;
+  }
+  openVideoModal(embedUrl, recording.title);
+}
 
 /* Library */
 function initLibrary(){
